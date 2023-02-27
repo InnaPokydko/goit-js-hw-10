@@ -1,6 +1,7 @@
 import './css/styles.css';
 
 import API from './js/fetchCountries';
+import debounce from 'lodash.debounce';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -24,8 +25,14 @@ function onSubmit(e) {
 
     API.fetchCountries()
   .then(renderCountries)
-  .catch(error => console.log(error))
+  .catch(onFetchError)
   .finally(() => form.reset());
 }
 
-function renderCountries(country) {}
+function renderCountries(country) {
+
+}
+
+function onFetchError(error) {
+
+}
