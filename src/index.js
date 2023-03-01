@@ -10,12 +10,12 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
-refs.inputForm.addEventListener('submit', onSubmit);
+refs.inputForm.addEventListener('submit', debounce(onSubmit, DEBOUNCE_DELAY));
 
 function onSubmit(e) {
   e.preventDefault();
 
-  const nameCountry = e.target.value.trim();
+  const nameCountry = inputForm.value.trim();
 
   if (nameCountry === '') {
     API.fetchCountries(searchQuery)
@@ -23,7 +23,7 @@ function onSubmit(e) {
       .catch(onFetchError)
       .finally(() => form.reset());
   }
-}
+ }
 
 function renderCountries(nameCountry) {
   if (nameCountry.length > 10) {
