@@ -1,5 +1,5 @@
 import './css/styles.css';
-import API from './js/fetchCountries';
+import { fetchCountries } from './js/fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
@@ -17,27 +17,36 @@ function onSubmit(e) {
 
   const nameCountry = inputForm.value.trim();
 
-  if (nameCountry === '') {
-    API.fetchCountries(searchQuery)
+  if (nameCountry === " ") {
+    refs.countryList.innerHTML = "";
+    refs.countryInfo.innerHTML = "";
+    return;
+  }
+
+fetchCountries(nameCountry)
       .then(renderCountries)
       .catch(onFetchError)
       .finally(() => form.reset());
-  }
- }
-
+}
+      
 function renderCountries(nameCountry) {
+  
   if (nameCountry.length > 10) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+    refs.countryList.innerHTML = "";
+    refs.countryInfo.innerHTML = "";
+    return;
   }
-  if (countries.length >= 2 && countries.length <= 10) {
+
+ else if (countries.length >= 2 && countries.length <= 10) {
     const murkUp = nameCountry
       .map(({ name, flags }) => {
         return `<li>
           <img class="img" src="${flags.svg}" alt="${flags.alt}" width="30" height="20">
           <h1 class="official-name">${name.official}</h1>
-                    </li>`;
+        </li>`;
       })
       .join('');
     refs.countryList.innerHTML = murkUp;
@@ -50,13 +59,18 @@ function renderCountries(nameCountry) {
       <h1 class="official-name">${name.official}</h1>
       <p class="text">Capital: ${capital}</p>
       <p class="text">Population: ${population}</p>
-      <p class="text">Languages: ${languages}</p>
+      <p class="text">Languages:  ${Object.values(languages)}</p>
       `;
     })
     .join('');
   refs.countryInfo.innerHTML = murkUp;
 }
 
+
 function onFetchError(error) {
   Notiflix.Notify.failure(`❌Oops, there is no country with that name`);
+  refs.countryList.innerHTML = "";
+  refs.countryInfo.innerHTML = "";
+  return error;
 }
+
