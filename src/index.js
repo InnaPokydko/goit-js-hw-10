@@ -1,5 +1,6 @@
-import './css/styles.css';
+
 import { fetchCountries } from './js/fetchCountries';
+import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
@@ -15,7 +16,7 @@ refs.inputForm.addEventListener('submit', debounce(onSubmit, DEBOUNCE_DELAY));
 function onSubmit(e) {
   e.preventDefault();
 
-  const nameCountry = inputForm.value.trim();
+  const nameCountry = e.currentTarget.elements.query.value;
 
   if (nameCountry === " ") {
     refs.countryList.innerHTML = "";
