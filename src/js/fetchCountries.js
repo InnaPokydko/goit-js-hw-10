@@ -1,27 +1,11 @@
-export { fetchCountries };
 
-function fetchCountries(name) {
-  return fetch(`https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags.svg,languages`)
-  .then((response) => {
-    // if (!response.ok) {
-    //   throw new Error(response.status);
-    // }
-    return response.json();
-   
-  });
+const COUNTRIES_DATA = 'https://restcountries.com/v3.1/name/';
+const fields = 'fields=name,capital,population,flags,languages';
+
+export function fetchCountries(name) {
+  return fetch(`${COUNTRIES_DATA}${name}?${fields}`)
+    .then(response => response.json())
+    .catch(error => console.log(error));
 }
 
-// .then(response => {
-//   if (!response.ok) {
-//     throw new Error(response.status);
-//   }
-//   return response.json();
-// })
-// .then(data => {
-//   if (Array.isArray(data)) {
-//     return data;
-//   } else {
-//     throw new Error("Unexpected response format");
-//   }
-// });}
-console.log(fetchCountries(name));
+

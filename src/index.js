@@ -1,6 +1,5 @@
-
-import { fetchCountries } from './js/fetchCountries';
 import './css/styles.css';
+import { fetchCountries } from './js/fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
@@ -11,37 +10,30 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
-refs.inputForm.addEventListener('input', debounce(onSubmit, DEBOUNCE_DELAY));
+refs.inputForm.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
-function onSubmit(e) {
-  e.preventDefault();
-
+function onInput() {
   const nameCountry = refs.inputForm.value.trim();
 
-  fetchCountries(nameCountry)
-      .then(renderCountries)
-      .catch(onFetchError)
-      // .finally(() => form.reset());
+  if (nameCountry === '') {
+    (refs.countryList.innerHTML = ''), (refs.countryInfo.innerHTML = '');
+  }
 
-      if (nameCountry === " ") {
-        return (refs.countryList.innerHTML = ""),
-        (refs.countryInfo.innerHTML = "");
-          }
+  fetchCountries(nameCountry)
+    .then(renderCountries)
+    .catch(onFetchError)
+    .finally(() => nameCountry.reset);
 }
-      
-function renderCountries(nameCountry) {
-  
-  if (nameCountry.length > 10) {
+// Функція, яка рендерить отриманий json
+function renderCountries(countries) {
+  if (countries.length > 10) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
-    refs.countryList.innerHTML = "";
-    refs.countryInfo.innerHTML = "";
-    return;
-  }
-
- else if (countries.length >= 2 && countries.length <= 10) {
-    const murkUp = nameCountry
+    refs.countryList.innerHTML = '';
+    refs.countryInfo.innerHTML = '';
+  } else if (countries.length >= 2 && countries.length <= 10) {
+    const murkUp = countries
       .map(({ name, flags }) => {
         return `<li>
           <img class="img" src="${flags.svg}" alt="${flags.alt}" width="30" height="20">
@@ -50,13 +42,16 @@ function renderCountries(nameCountry) {
       })
       .join('');
     refs.countryList.innerHTML = murkUp;
+    refs.countryInfo.innerHTML = '';
     return murkUp;
   }
 
-  const murkUp = nameCountry
+  const murkUp = countries
     .map(({ name, capital, population, flags, languages }) => {
       return `
-      <img class="img" src="${flags.svg}" alt="${flags.alt}" width="30" height="20">
+      <img class="img" src="${flags.svg}" alt="${
+        flags.alt
+      }" width="30" height="20">
       <h1 class="official-name">${name.official}</h1>
       <p class="text">Capital: ${capital}</p>
       <p class="text">Population: ${population}</p>
@@ -64,15 +59,14 @@ function renderCountries(nameCountry) {
       `;
     })
     .join('');
+  refs.countryList.innerHTML = '';
   refs.countryInfo.innerHTML = murkUp;
   return murkUp;
 }
 
-
 function onFetchError(error) {
   Notiflix.Notify.failure(`❌Oops, there is no country with that name`);
-  refs.countryList.innerHTML = "";
-  refs.countryInfo.innerHTML = "";
+  refs.countryList.innerHTML = '';
+  refs.countryInfo.innerHTML = '';
   return error;
 }
-
