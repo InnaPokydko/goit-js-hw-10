@@ -16,8 +16,10 @@ function onInput() {
   const nameCountry = refs.inputForm.value.trim();
 
   if (nameCountry === '') {
-    (refs.countryList.innerHTML = ''), (refs.countryInfo.innerHTML = '');
-  }
+    // Notiflix.Notify.info(
+    //   'Please enter a valid value.');
+    return (refs.countryList.innerHTML = ''), (refs.countryInfo.innerHTML = '');
+     }
 
   fetchCountries(nameCountry)
     .then(renderCountries)
@@ -32,6 +34,7 @@ function renderCountries(countries) {
     );
     refs.countryList.innerHTML = '';
     refs.countryInfo.innerHTML = '';
+
   } else if (countries.length >= 2 && countries.length <= 10) {
     const murkUp = countries
       .map(({ name, flags }) => {
@@ -44,8 +47,8 @@ function renderCountries(countries) {
     refs.countryList.innerHTML = murkUp;
     refs.countryInfo.innerHTML = '';
     return murkUp;
-  }
-
+  } 
+  else if (countries.length === 1) {
   const murkUp = countries
     .map(({ name, capital, population, flags, languages }) => {
       return `
@@ -62,6 +65,7 @@ function renderCountries(countries) {
   refs.countryList.innerHTML = '';
   refs.countryInfo.innerHTML = murkUp;
   return murkUp;
+};
 }
 
 function onFetchError(error) {
