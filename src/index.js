@@ -11,23 +11,22 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
-refs.inputForm.addEventListener('submit', debounce(onSubmit, DEBOUNCE_DELAY));
+refs.inputForm.addEventListener('input', debounce(onSubmit, DEBOUNCE_DELAY));
 
 function onSubmit(e) {
   e.preventDefault();
 
-  const nameCountry = e.currentTarget.elements.query.value;
+  const nameCountry = refs.inputForm.value.trim();
 
-  if (nameCountry === " ") {
-    refs.countryList.innerHTML = "";
-    refs.countryInfo.innerHTML = "";
-    return;
-  }
-
-fetchCountries(nameCountry)
+  fetchCountries(nameCountry)
       .then(renderCountries)
       .catch(onFetchError)
-      .finally(() => form.reset());
+      // .finally(() => form.reset());
+
+      if (nameCountry === " ") {
+        return (refs.countryList.innerHTML = ""),
+        (refs.countryInfo.innerHTML = "");
+          }
 }
       
 function renderCountries(nameCountry) {
@@ -51,6 +50,7 @@ function renderCountries(nameCountry) {
       })
       .join('');
     refs.countryList.innerHTML = murkUp;
+    return murkUp;
   }
 
   const murkUp = nameCountry
@@ -65,6 +65,7 @@ function renderCountries(nameCountry) {
     })
     .join('');
   refs.countryInfo.innerHTML = murkUp;
+  return murkUp;
 }
 
 
